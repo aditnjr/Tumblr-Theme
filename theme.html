@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{Title}</title>
+    
+    <link rel="shortcut icon" href="{Favicon}">
+    <link rel="alternate" type="application/rss+xml" href="{RSS}">
+    {block:Description}
+        <meta name="description" content="{MetaDescription}" />
+    {/block:Description}
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add icon library -->
+    <script src="https://kit.fontawesome.com/032ada788e.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet">
+    
+    <style type="text/css">
+   body {
+    color: #333333;
+    background-color: #fff;
+    font-family: Lato, sans-serif;
+    max-width: 1040px;
+    margin: 36px auto;
+    position: relative;
+    display: flex;
+    flex-flow: row wrap;
+    font-size: 15px;
+}
+
+main {
+    padding: 40px;
+}
+
+a {
+    color : #333;
+}
+
+a:hover {
+    color : #777;
+    text-decoration: none;
+}
+
+.sidebar {
+    padding-top: 40px;
+    padding-left: 40px;
+}
+
+.post-container {
+    max-width: 500px;
+}
+
+.profile, .social-media {
+    position : fixed;
+    margin-bottom: 18px;
+}
+
+.profile-picture {
+    margin-bottom: 13px;
+}
+
+.profile-title {
+    font-size : 24px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.profile-description {
+    font-size : 14px;
+}
+
+.social-media {
+    bottom: 36px;
+    font-size: 24px;
+}
+
+.fas, .fa, .fab {
+      color : #333;
+}
+
+/* Style all font awesome icons */
+.social-media a {
+  padding-right: 20px;
+}
+
+.post-row {
+    margin-bottom : 63px;
+}
+
+.post-row ul {
+    padding-top : 10px;
+    padding-bottom : 10px;
+}
+
+.left-align {
+    text-align: left;
+    float: left;
+}
+
+.right-align {
+    text-align: right;
+    float: right;
+}
+
+.btn {
+    border-radius : 0px;
+}
+
+.btn-secondary {
+    background-color : #333;
+}
+
+@media screen and (max-width: 768px) {
+    .profile, .social-media {
+        position : relative;
+        margin-bottom : 24px;
+    }
+
+    .sidebar {
+        padding: 40px;
+    }
+
+    .social-media {
+        bottom: 0;
+    }
+}
+</style>
+  </head>
+  <body>
+  
+  <!-- Post Section -->
+  <div class="sidebar col-md-4">
+    <div class="profile">
+        <a href="{BlogURL}"><img class="profile-picture rounded-circle" src="{PortraitURL-96}" alt="Card image cap"></a>
+        <a href="{BlogURL}"><h2 class="profile-title">{Title}</h2></a>
+        <span class="profile-description">{Description}</span>
+    </div>
+
+    <div class="social-media">
+        <!-- Add font awesome icons -->
+        <a href="https://www.instagram.com/djuangrm" class="fas fa-basketball-ball"></a>
+        <a href="https://www.behance.net/aditnjr" class="fab fa-behance-square"></a>
+        <a href="https://www.twitter.com/djuangrm" class="fab fa-twitter"></a>
+        <a href="https://www.instagram.com/djuangrm" class="fab fa-instagram"></a>
+      </div>
+  </div>
+
+  <!-- Post Section -->
+  <main class="main col-md-8" role="main">  
+    
+    <div class="post-container mx-auto">
+    
+    {block:Posts}
+        <!-- Image post -->
+        {block:Photo}
+        <div class="post-row post-image">
+            <a href="{Permalink}"><img class="img-fluid" src="{PhotoURL-500}" alt="Card image cap"></a>
+            <ul class="list-inline">
+                <li class="post-reblog list-inline-item">
+                    <a href="{ReblogURL}" class="fas fa-retweet"></a></li>
+                <li class="post-love list-inline-item">
+                    <a href="{Permalink}" class="fas fa-heart"></a></li>
+                {block:NoteCount}
+                <li class="post-notes list-inline-item">{NoteCountWithLabel}</li>{/block:NoteCount}
+                {block:Date}
+                <li class="post-date list-inline-item right-align">{ShortMonth} {DayOfMonth}</li>{/block:Date}
+            </ul>
+            
+            {block:PostTitle}
+                <div id="post-title">{PostTitle}</div>
+            {/block:PostTitle}
+            
+            {block:PostNotes}
+                <div id="post-notes">{PostNotes}</div>
+            {/block:PostNotes}
+        </div>
+        {/block:Photo}
+    {/block:Posts}
+    
+    <!-- Pagination -->
+    <p class="text-center">
+        {block:PreviousPage}
+        <a href="{PreviousPage}" class="btn btn-secondary left-align">Previous</a>
+        {/block:PreviousPage}
+        {block:NextPage}
+        <a href="{NextPage}" class="btn btn-secondary right-align">Next</a>
+        {/block:NextPage}
+    </p>
+  </div>
+</div>
+</main>
+  
+  <!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js">
+</script>
+  </body>
+</html>
