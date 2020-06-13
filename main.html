@@ -91,7 +91,7 @@ a:hover {
 
 .profile-title {
     color: {color:Heading text};
-    font-family: {font:Title};;
+    font-family: {font:Title};
     font-size : 24px;
     font-weight: 700;
     margin-bottom: 2px;
@@ -224,6 +224,22 @@ svg {
     <div class="post-container mx-auto">
     
     {block:Posts}
+     <script>var posts = new Array();</script>
+                        {block:Posts}
+                            <script>
+                                posts[{PostId}] = {NPF};
+                            </script>
+         <!-- Text post -->
+        {block:Title}
+            {Title}
+        {/block:Title}
+        
+        <!-- Photoset -->
+        {block:Photoset}
+            <img src="{PhotoURL-500}" width="{PhotoWidth-500}" height="{PhotoHeight-500}" />
+            {block:Caption}{Caption}{/block:Caption}
+        {/block:Photoset}
+    
         <!-- Image post -->
         {block:Photo}
         <div class="post-row post-image"> 
@@ -256,6 +272,7 @@ svg {
             {/block:PostNotes}
         </div>
         {/block:Photo}
+        
     {/block:Posts}
     
     <!-- Pagination -->
@@ -270,7 +287,102 @@ svg {
   </div>
 </div>
 </main>
-  
+<script>
+            const posts_div = document.getElementById('post-list');
+            console.log(posts);
+            for (let id in posts) {
+                const post_content_element = renderPostContent(posts[id], id);
+                posts_div.appendChild(post_content_element);
+            }
+            
+            function renderPostContent(npf_data, id) {
+                const post_content = npf_data.content;
+                const post_trail = npf_data.trail;
+                const post_layout = npf_data.layout;
+                const post_blog_info = npf_data.blog;
+                let post_div = document.createElement('div');
+                post_div.setAttribute('class', 'npf_post');
+                
+                // dumb stuff for debugging
+                let dummy_paragraph = document.createElement('p');
+                dummy_paragraph.setAttribute('class', 'npf_attribution');
+                let blog_name = 'this blog';
+                if (post_blog_info !== undefined) {
+                    blog_name = post_blog_info.name;
+                }
+                let dummy_text = document.createTextNode('Post ID #' + id + ' by ' + blog_name);
+                dummy_paragraph.appendChild(dummy_text);
+                post_div.appendChild(dummy_paragraph);
+                
+                // handle the trail if one exists
+                let trail_div = document.createElement('div');
+                trail_div.setAttribute('class', 'npf_trail');
+                if (post_trail !== undefined && post_trail.length > 0) {
+                    for (let i in post_trail) {
+                        const post_trail_data = post_trail[i];
+                        const trail_content_element = renderPostContent(post_trail_data, post_trail_data.post.id);
+                        trail_div.appendChild(trail_content_element);
+                    }
+                }
+                post_div.appendChild(trail_div);
+                
+                // handle the content if any exist
+                let content_div = document.createElement('div');
+                content_div.setAttribute('class', 'npf_content');
+                if (post_content.length > 0) {
+                    for (let i in post_content) {
+                        const content_block = post_content[i];
+                        if (content_block.type === undefined) {
+                            console.error('ran into a content block with no type!');
+                            continue;
+                        }
+                        
+                        let content_block_element;
+                        switch (content_block.type) {
+                            case 'text':
+                                content_block_element = renderTextBlock(content_block);
+                                break;
+                            case 'image':
+                                content_block_element = renderImageBlock(content_block);
+                                break;
+                            default:
+                                content_block_element = renderUnknownBlock(content_block);
+                        }
+                        
+                        if (content_block_element !== undefined) {
+                            content_div.appendChild(content_block_element);
+                        }
+                    }
+                }
+                post_div.appendChild(content_div);
+                
+                // not doing anything with layout yet
+                
+                return post_div;
+            }
+            
+            function renderTextBlock(text_content_block) {
+                let paragraph = document.createElement('p');
+                let text = document.createTextNode(text_content_block.text);
+                paragraph.appendChild(text);
+                return paragraph;
+            }
+            
+            function renderImageBlock(image_content_block) {
+                let image = document.createElement('img');
+                image.setAttribute('src', image_content_block.media[0].url);
+                return image;
+            }
+            
+            function renderUnknownBlock(content_block) {
+                let paragraph = document.createElement('p');
+                paragraph.setAttribute('class', 'npf_unknown_block');
+                let text = document.createTextNode("Dunno how to handle the '" + content_block.type + "' block type yet!");
+                paragraph.appendChild(text);
+                return paragraph;
+            }
+        </script>
+
   <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js">
 </script>
