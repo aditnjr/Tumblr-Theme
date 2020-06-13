@@ -145,6 +145,30 @@ a:hover {
     background-color : #333;
 }
 
+div.npf_post {
+    margin-bottom: 3em;
+}
+            
+div.npf_trail div.npf_post {
+    border: 1px solid gray;
+    margin-bottom: 1em;
+}
+            
+p.npf_attribution {
+    font-size: 0.75rem;
+}
+            
+p.npf_unknown_block {
+    color: red;
+    font-family: monospace;
+}
+            
+div.npf_content img {
+    width: 100%;
+    height: auto;
+}
+
+
 svg {
    width:14px;
    height:auto;
@@ -177,6 +201,59 @@ svg {
    opacity:0;
 }
 
+.lightbox {
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding: 100px 0px 100px 0px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+}
+
+.modal-content {
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .modal-content {
+    width: 100%;
+  }
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+    .modal-content {
+        width: 100%;
+    }
+}
+
 @media screen and (min-width: 1440px) {
     body {
         max-width: 1280px;
@@ -195,6 +272,10 @@ svg {
 
     .social-media {
         bottom: 0;
+    }
+    
+    .modal-content {
+        width: 100%;
     }
 }
 </style>
@@ -224,11 +305,6 @@ svg {
     <div class="post-container mx-auto">
     
     {block:Posts}
-     <script>var posts = new Array();</script>
-                        {block:Posts}
-                            <script>
-                                posts[{PostId}] = {NPF};
-                            </script>
          <!-- Text post -->
         {block:Title}
             {Title}
@@ -274,6 +350,15 @@ svg {
         {/block:Photo}
         
     {/block:Posts}
+
+    <script>var posts = new Array();</script>
+        {block:Posts}
+            <script>
+                posts[{PostId}] = {NPF};
+            </script>
+                            
+        {/block:Posts}
+    <div id="post-list"></div>
     
     <!-- Pagination -->
     <p class="text-center">
@@ -287,6 +372,12 @@ svg {
   </div>
 </div>
 </main>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <img class="modal-content" id="img01">
+</div>
+
 <script>
             const posts_div = document.getElementById('post-list');
             console.log(posts);
@@ -310,9 +401,6 @@ svg {
                 if (post_blog_info !== undefined) {
                     blog_name = post_blog_info.name;
                 }
-                let dummy_text = document.createTextNode('Post ID #' + id + ' by ' + blog_name);
-                dummy_paragraph.appendChild(dummy_text);
-                post_div.appendChild(dummy_paragraph);
                 
                 // handle the trail if one exists
                 let trail_div = document.createElement('div');
@@ -371,6 +459,8 @@ svg {
             function renderImageBlock(image_content_block) {
                 let image = document.createElement('img');
                 image.setAttribute('src', image_content_block.media[0].url);
+                image.setAttribute('class', 'lightbox');
+                
                 return image;
             }
             
@@ -382,6 +472,32 @@ svg {
                 return paragraph;
             }
         </script>
+        
+        <script>
+// create references to the modal...
+var modal = document.getElementById('myModal');
+// to all images -- note I'm using a class!
+var images = document.getElementsByClassName('lightbox');
+// the image in the modal
+var modalImg = document.getElementById("img01");
+// and the caption in the modal
+var captionText = document.getElementById("caption");
+
+// Go through all of the images with our custom class
+for (var i = 0; i < images.length; i++) {
+  var img = images[i];
+  // and attach our click listener for this image.
+  img.onclick = function(evt) {
+    modal.style.display = "block";
+    modalImg.src = this.src;
+    captionText.innerHTML = this.alt;
+  }
+}
+
+modal.onclick = function() {
+  modal.style.display = "none";
+}
+</script>
 
   <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js">
